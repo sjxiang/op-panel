@@ -10,16 +10,16 @@ import (
 
 
 type UserClaims struct {
-	UserIdentity string `json:"user_identity"`
+	UserName string `json:"user_name"`
 
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(userIdentitiy string) (string, error) {
+func GenerateToken(userName string) (string, error) {
 
 	// 签名
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, UserClaims{
-		UserIdentity: userIdentitiy,
+		UserName: userName,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{
 				Time: time.Now().Add(constants.TokenExpireDuation),

@@ -28,3 +28,7 @@
 - [ ] 其他
     - [ ] 登录
     
+
+```SQL
+insert into config_basic (`id`, `key`, `value`) values (1, "admin", "123456");
+```

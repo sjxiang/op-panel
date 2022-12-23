@@ -13,7 +13,9 @@ import (
 var DB *gorm.DB
 
 func NewDB() {
-	db, err := gorm.Open(mysql.Open(constants.MySQLDefaultDSN), &gorm.Config{
+	var err error
+
+	DB, err = gorm.Open(mysql.Open(constants.MySQLDefaultDSN), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,  // 解决单数表名，user
 		},
@@ -25,8 +27,6 @@ func NewDB() {
 	}
 
 	migrate()
-
-	DB = db
 }
 
 
