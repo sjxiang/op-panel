@@ -31,9 +31,11 @@ func NewDB() {
 
 
 func migrate() {
-	err := DB.AutoMigrate(&ConfigBasic{})
+
+	err := DB.AutoMigrate(&ConfigBasic{}, &TaskBasic{})
 	if err != nil {
 		panic("[MIGRATE ERROR]:#" + err.Error())
 	}
+	
 }
 

@@ -24,6 +24,6 @@ func registerApiRoutes(router *gin.Engine) {
 
 	v1.GET("/systemstate", service.SystemState)
 
-
+	v1.GET("/tasklist", service.TaskList)
 	
 }

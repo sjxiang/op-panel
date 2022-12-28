@@ -27,4 +27,5 @@
 
 ```SQL
 insert into config_basic (`id`, `key`, `value`) values (1, "admin", "123456");
+insert into task_basic (`id`, `spec`, `shell_path`, `name`) values (1, "ls", "./usr", "list");
 ```

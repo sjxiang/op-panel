@@ -17,3 +17,6 @@ const (
 	DefaultLimit            = 10
 	TokenExpireDuation      = time.Hour * 720   // 1 月
 )
+
+
+const PageSize int = 20

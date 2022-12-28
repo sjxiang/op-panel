@@ -17,8 +17,7 @@ func SystemState(ctx *gin.Context) {
 		cpuUsedPercent float64
 		memUsedPercent float64
 		// diskUsed       uint64
-		// diskUsedPercent float64
-		
+		// diskUsedPercent float64	
 	)
 
 	// cpu	
