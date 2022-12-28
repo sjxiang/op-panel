@@ -3,84 +3,49 @@ package service
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
-
-	"github.com/sjxiang/op-panel/models"
-	"github.com/sjxiang/op-panel/pkg/helper"
+	"github.com/shirou/gopsutil/cpu"
+	// "github.com/shirou/gopsutil/disk"
+	"github.com/shirou/gopsutil/mem"
 )
 
-// 配合 shouldBind
-type UserInfoRequest struct {
-	Name     string `json:"name"`
-	Password string `json:"password"`
-}
+// SystemState 获取系统状态
+func SystemState(ctx *gin.Context) {
+	var (
+		cpuUsedPercent float64
+		memUsedPercent float64
+		// diskUsed       uint64
+		// diskUsedPercent float64
+		
+	)
 
-
-func Login(ctx *gin.Context) {
-
-	name := ctx.PostForm("name")
-	password := ctx.PostForm("password")
-
-	if name == "" || password == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"code": -1,
-			"msg": "用户名或者密码不能为空",
-		})
-
-		return
+	// cpu	
+	cpuPercents, _ := cpu.Percent(time.Second, true)
+	for _, percent := range cpuPercents {
+		cpuUsedPercent += percent
 	}
+	cpuUsedPercent /= float64(len(cpuPercents))
 
-	cb := new(models.ConfigBasic)
-	err := models.DB.Model(new(models.ConfigBasic)).Where("`key` = ?", name).First(cb).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"code": -1,
-				"msg": "用户信息未初始化",
-			})
+	// mem
+	vms, _ := mem.VirtualMemory()
+	memUsedPercent = vms.UsedPercent
 
-			return
-		}
+	// disk （考虑过权限嘛 permission denied）
+	// partitions, _ := disk.Partitions(true)
+	// for _, partition := range partitions {
+	// 	us, err := disk.Usage(partition.Mountpoint)
+	// 	fmt.Printf("%+v", err)
+	// 	diskUsed += us.Used
+	// }
+	// allUsage, _ := disk.Usage("/")  
+	// diskUsedPercent = float64(diskUsed) / float64(allUsage.Total) * 100  // 所有可用的磁盘
 
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"code": -1,
-			"msg": "数据查询异常" + err.Error(),
-		})
 
-		return
-	}
-
-	fmt.Println(cb.Key, cb.Value)
-
-	if cb.Key != name || cb.Value != password {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"code": -1,
-			"msg": "用户名或密码错误",
-		})
-
-		return
-	}
-
-	
-	// 生成 JWT
-	token, err := helper.GenerateToken(cb.Key)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"code": -1,
-			"msg": "系统异常" + err.Error(),
-		})
-
-		return
-	}
-	
 	ctx.JSON(http.StatusOK, gin.H{
-		"code": 200,
-		"msg": "登录成功",
-		"data": gin.H{
-			"token": "Bearer " + token,
-		},
+		"cpu": fmt.Sprintf("%.2f", cpuUsedPercent),
+		"mem": fmt.Sprintf("%.2f", memUsedPercent),
+		// "disk": fmt.Sprintf("%.2f", diskUsedPercent),
 	})
 }
-

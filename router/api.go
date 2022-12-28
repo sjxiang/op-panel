@@ -22,7 +22,7 @@ func registerApiRoutes(router *gin.Engine) {
 	v1 := router.Group("/v1")
 	v1.Use(middleware.Auth())
 
-	v1.POST("/system", nil)
+	v1.GET("/systemstate", service.SystemState)
 
 
 	
