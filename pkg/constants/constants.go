@@ -20,3 +20,5 @@ const (
 
 
 const PageSize int = 20
+const ShellDir = "./shell"
+const LogPath = "./log"

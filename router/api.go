@@ -24,6 +24,11 @@ func registerApiRoutes(router *gin.Engine) {
 
 	v1.GET("/systemstate", service.SystemState)
 
+	// 定时任务
 	v1.GET("/tasklist", service.TaskList)
-	
+	v1.POST("/task/add", service.TaskAdd)
+	v1.DELETE("/task/del", service.TaskDelete)
+	v1.PUT("/task/edit", service.TaskEdit)
+
+	// 软件
 }

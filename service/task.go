@@ -30,7 +30,7 @@ func TaskList(ctx *gin.Context) {
 	err := models.DB.Model(new(models.TaskBasic)).Count(&cnt).Offset(indexNum).Limit(sizeNum).Find(&tb).Error
 	if err != nil {
 		log.Println("[DB Error]:#" + err.Error())
-		ctx.JSON(http.StatusOK, gin.H{
+		ctx.JSON(http.StatusBadRequest, gin.H{
 			"code": -1,
 			"msg": "系统异常" + err.Error(),
 		})
@@ -48,3 +48,55 @@ func TaskList(ctx *gin.Context) {
 	})
 
 }
+
+
+func TaskAdd(ctx *gin.Context) {
+	name := ctx.PostForm("name")
+	spec := ctx.PostForm("spec")
+	data := ctx.PostForm("data")
+
+	if name == "" || spec == "" || data == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code": -1,
+			"msg": "必填参数不能为空",
+		})
+
+		return
+	}
+
+	shellName := helper.UUID()
+	tb := &models.TaskBasic{
+		Name: name,
+		Spec: spec,
+		ShellPath: constants.ShellDir + "/" + shellName + ".sh",
+		LogPath: constants.LogPath + "/" + shellName + ".log",
+	}
+
+
+	err := models.DB.Create(tb).Error
+	if err != nil {
+		log.Println("[DB Error]:#" + err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code": -1,
+			"msg": "系统异常" + err.Error(),
+		})
+
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"msg": "新增成功",
+		"code": 200,
+	})
+}
+
+
+func TaskEdit(ctx *gin.Context) {
+
+}
+
+
+func TaskDelete(ctx *gin.Context) {
+
+}
+
