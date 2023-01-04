@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sjxiang/op-panel/middleware"
+	// "github.com/sjxiang/op-panel/middleware"
 	"github.com/sjxiang/op-panel/service"
 )
 
@@ -20,7 +20,7 @@ func registerApiRoutes(router *gin.Engine) {
 
 
 	v1 := router.Group("/v1")
-	v1.Use(middleware.Auth())
+	// v1.Use(middleware.Auth())
 
 	v1.GET("/systemstate", service.SystemState)
 
@@ -30,5 +30,9 @@ func registerApiRoutes(router *gin.Engine) {
 	v1.DELETE("/task/del", service.TaskDelete)
 	v1.PUT("/task/edit", service.TaskEdit)
 
-	// 软件
+
+	// 定时任务
+	v1.GET("/jobs", service.GetJobs)
+	v1.POST("/jobs", service.AddJob)
+	v1.DELETE("/jobs", service.DeleteJob)
 }
